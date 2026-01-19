@@ -1,57 +1,31 @@
-const mySql = require('mysql2'); 
+const {Sequelize} = require("sequelize"); //import sequelize and give only the sequelize 
+//class from the sequelize library 
 
-const connection = mySql.createConnection({
-    host:'localhost',
-    user:'root',
-    password:'Edu@Games1973',
-    database:'busBookingDB'
-})
-
-connection.connect((err)=>{
-    if(err){
-        console.log(err); 
-        return; 
-    }
-
-    console.log("Connection has been created"); 
-
-    const usersTable = `
-    CREATE TABLE IF NOT EXISTS users (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      name VARCHAR(255),
-      email VARCHAR(255)
-    );
-  `;
-
-  const busesTable = `
-    CREATE TABLE IF NOT EXISTS buses (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      busNumber VARCHAR(50),
-      totalSeats INT,
-      availableSeats INT
-    );
-  `;
-
-  const bookingsTable = `
-    CREATE TABLE IF NOT EXISTS bookings (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      seatNumber INT
-    );
-  `;
+const sequelize = new Sequelize("busbookingdb", "root","Edu@Games1973", {
+  host:"localhost", 
+  dialect:"mysql", 
+  logging:false
+}) //connecting to the database using sequelize 
 
 
-  const paymentsTable = `
-    CREATE TABLE IF NOT EXISTS payments (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      amountPaid INT,
-      paymentStatus VARCHAR(50)
-    );
-  `;
+const connectDb = async()=>{ //connectDb function, async means this function will do something
+  //that takes time 
+  try {
+  await sequelize.authenticate()    //tries to connect to the database, await means wait here
+  //until the database responds 
+  console.log("Sequelize connected to database"); //log this if the connection is successful 
+  } catch (error) { //if anything goes wrong in try, execution jumps here 
+    console.log("Db connection failed:", error) //prints error message and error details 
+  }
 
-    connection.execute(usersTable);
-    connection.execute(busesTable);
-    connection.execute(bookingsTable);
-    connection.execute(paymentsTable);
-}); 
+}
 
-module.exports = connection; 
+
+module.exports = {sequelize, connectDb}; 
+
+
+//This file's job was to 
+//A - configue Sequelize 
+//B - Connect to the MYSQL databse 
+//C - Test the connection 
+//D - Export everything for the rest of the app 

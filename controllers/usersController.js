@@ -1,23 +1,24 @@
-const db = require('../utils/db');
+const User = require("../models/user");
 
-const addEntries = (req, res) => {
-  const { email, name } = req.body;
-
-  const insertQuery = 'INSERT INTO users (email, name) VALUES (?, ?)';
-
-  db.execute(insertQuery, [email, name], (err) => {
-    if (err) return res.status(500).send(err.message);
-    return res.status(200).send(`User with name ${name} successfully added`);
-  });
+// POST /users
+const addEntries = async (req, res) => {
+  try {
+    const { name, email } = req.body;
+    await User.create({ name, email });
+    res.status(201).send("User added successfully");
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
 };
 
-const getEntries = (req, res) => {
-  const selectQuery = "SELECT * FROM users";
-
-  db.execute(selectQuery, (err, results) => {
-    if (err) return res.status(500).send(err.message);
-    return res.status(200).json(results);
-  });
+// GET /users
+const getEntries = async (req, res) => {
+  try {
+    const users = await User.findAll(); // Sequelize findAll
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
 };
 
 module.exports = { addEntries, getEntries };
