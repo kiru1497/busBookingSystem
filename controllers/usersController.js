@@ -1,5 +1,7 @@
 const User = require("../models/user");
 
+const { Booking, Bus } = require("../models");
+
 // POST /users
 const addEntries = async (req, res) => {
   try {
@@ -21,4 +23,22 @@ const getEntries = async (req, res) => {
   }
 };
 
-module.exports = { addEntries, getEntries };
+
+const getUserBookings = async (req, res) => {
+  try {
+    const bookings = await Booking.findAll({
+      where: { userId: req.params.id },
+      include: {
+        model: Bus,
+        attributes: ["busNumber"],
+      },
+    });
+
+    res.json(bookings);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
+module.exports = { addEntries, getEntries, getUserBookings };

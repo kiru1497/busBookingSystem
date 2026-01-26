@@ -8,6 +8,11 @@ app.use(express.json());
 
 app.use("/users", require("./routes/usersRoutes"));
 app.use("/buses", require("./routes/busesRoutes"));
+app.use("/bookings", require("./routes/bookingRoutes"));
+
+
+require("./models");
+
 
 const startServer = async()=>{ //a function to start everything properly
     await connectDb(); //call db connection checker to ensure database exists, credentials 
